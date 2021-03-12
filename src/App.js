@@ -1,5 +1,5 @@
-//add feature
 import React from 'react';
+import Filter from './components/Filter';
 import Products from './components/Products';
 import data from "./data.json"
 
@@ -12,6 +12,43 @@ class App extends React.Component {
       sort: "",
     };
   }
+
+  filterProducts = (event) => {
+    if(event.target.value === "all"){
+      this.setState({size:event.target.value, products:data.products});
+    } else {
+      this.setState({
+        size: event.target.value,
+        products: data.products.filter((product) => 
+                  product.availableSizes.indexOf(event.target.value) >=0
+        ),
+      });
+    }
+  };
+
+  sortProducts = (event) => {
+    const sortItem = event.target.value;
+   
+    // if( sortItem === "latest"){
+    //   this.setState({sort:sortItem, products:data.products.sort((a, b) => (a._id > b._id ? 1 : -1))});
+    // } else {
+    this.setState((state) => ({
+      sort: sortItem,
+      products: this.state.products
+        .slice()
+        .sort((a,b) => {
+           if(sortItem === "lowest"){
+              return a.price - b.price;
+           }else if (sortItem === "highest"){
+              return b.price - a.price;
+           }else{
+             return b._id - a._id;
+           }
+           
+        })     
+    }));
+  };
+
   render (){
     return (
       <div className="grid-container">
@@ -21,7 +58,12 @@ class App extends React.Component {
         <main>
           <div className= "content">
              <div className= "mainbar">
-                <Products products= {this.state.products}></Products>
+               <Filter count={this.state.products.length}
+                      size={this.state.size}
+                      sort={this.state.sort}
+                      filterProducts={this.filterProducts}
+                      sortProducts={this.sortProducts}></Filter>
+                <Products products={this.state.products}></Products>
              </div>
              <div className= "sidebar">Cart Items</div>
           </div>
