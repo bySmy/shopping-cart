@@ -35,16 +35,18 @@ class App extends React.Component {
     let isInCart = false;
     cartItems.forEach((item) => {
       if(item._id === product._id){
-        item.count++;
         isInCart = true;
-        cartItems.push ({product, count: 1});
+        item.count++; 
       }
     });
+
     if(!isInCart) {
       cartItems.push ({...product, count: 1});
     }
+
     this.setState({cartItems});
-    localStorage.setItem("cartItems",JSON.stringify(cartItems));
+
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   };
 
   filterProducts = (event) => {
